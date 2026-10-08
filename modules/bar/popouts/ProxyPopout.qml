@@ -13,6 +13,7 @@ ColumnLayout {
     property string selectedKind: Proxy.kind
     implicitWidth: 330
     spacing: Tokens.spacing.medium
+    Component.onCompleted: Proxy.refresh()
 
     RowLayout {
         Layout.fillWidth: true
@@ -79,6 +80,21 @@ ColumnLayout {
         icon: "check"
         enabled: !Proxy.busy && hostname.text.trim().length > 0 && proxyPort.acceptableInput
         onClicked: Proxy.save(hostname.text, proxyPort.text, root.selectedKind, true)
+    }
+    IconTextButton {
+        Layout.fillWidth: true
+        text: "Test connection"
+        icon: "network_check"
+        enabled: !Proxy.busy && Proxy.host.length > 0
+        onClicked: Proxy.test()
+    }
+    StyledText {
+        Layout.fillWidth: true
+        visible: Proxy.browserRestartRequired || Proxy.testMessage.length > 0
+        text: Proxy.browserRestartRequired ? "Close and reopen Brave once to activate proxy switching." : Proxy.testMessage
+        font: Tokens.font.body.small
+        color: Colours.palette.m3onSurfaceVariant
+        wrapMode: Text.Wrap
     }
     StyledText {
         Layout.fillWidth: true

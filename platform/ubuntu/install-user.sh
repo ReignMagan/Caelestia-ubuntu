@@ -21,6 +21,22 @@ install -m755 "$here/start-terminal-server.sh" "$base/bin/start-terminal-server"
 install -m644 "$here/caelestia-cli.py" "$base/bin/caelestia-cli.py"
 install -m755 "$here/sync-theme.py" "$base/bin/sync-theme.py"
 install -m755 "$here/proxy-control.py" "$base/bin/proxy-control.py"
+install -m755 "$here/browser.sh" "$base/bin/caelestia-browser"
+# Per-user Brave override: system proxy updates are discovered through GNOME's
+# settings subscription, even while the compositor itself remains Hyprland.
+if [[ -f /usr/share/applications/brave-browser.desktop ]]; then
+ python3 - "$base/bin/caelestia-browser" <<'PY'
+import sys
+from pathlib import Path
+target = Path.home() / '.local/share/applications/brave-browser.desktop'
+source = target if target.exists() else Path('/usr/share/applications/brave-browser.desktop')
+text = source.read_text()
+text = '\n'.join(line.replace('/usr/bin/brave-browser-stable', '"' + sys.argv[1] + '"')
+                 if line.startswith('Exec=') else line for line in text.splitlines()) + '\n'
+target.parent.mkdir(parents=True, exist_ok=True)
+target.write_text(text)
+PY
+fi
 if [[ ! -f "$config/caelestia/cli.json" ]]; then
  # Some upstream theme integrations change shared GTK settings, browser policies,
  # or every open PTY. Limit this separate session to its own Hyprland files.

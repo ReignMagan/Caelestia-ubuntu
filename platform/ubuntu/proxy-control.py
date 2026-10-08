@@ -3,6 +3,9 @@
 import ipaddress
 import json
 import re
+import os
+from pathlib import Path
+import subprocess
 import sys
 from gi.repository import Gio
 
@@ -38,11 +41,52 @@ def snapshot(root):
     mode = root.get_string("mode")
     return {"mode": mode, "enabled": mode != "none", "kind": kind,
             "host": child.get_string("host"), "port": child.get_int("port") or 8080,
-            "automatic": mode == "auto"}
+            "automatic": mode == "auto", "browserRestartRequired": brave_needs_restart()}
+
+
+def brave_needs_restart():
+    for process in Path("/proc").glob("[0-9]*"):
+        try:
+            if process.stat().st_uid != os.getuid():
+                continue
+            command = (process / "cmdline").read_bytes().split(b"\0")
+            if not command or not command[0].endswith(b"/brave"):
+                continue
+            if any(arg.startswith(b"--type=") or arg.startswith(b"--headless") for arg in command):
+                continue
+            environment = dict(part.split(b"=", 1) for part in (process / "environ").read_bytes().split(b"\0") if b"=" in part)
+            if b"GNOME" not in environment.get(b"XDG_CURRENT_DESKTOP", b"").split(b":"):
+                return True
+        except OSError:
+            pass
+    return False
+
+
+def test_connection(root):
+    state = snapshot(root)
+    if not state["host"]:
+        raise ValueError("Enter a hostname and port first.")
+    host, port = validate(state["host"], state["port"], state["kind"])
+    host = f"[{host}]" if ":" in host else host
+    protocol = "socks5h" if state["kind"] == "socks" else "http"
+    result = subprocess.run([
+        "/usr/bin/curl", "--noproxy", "", "--proxy", f"{protocol}://{host}:{port}",
+        "--connect-timeout", "4", "--max-time", "8", "--silent", "--show-error",
+        "--output", "/dev/null", "--write-out", "%{http_code}", "https://example.com",
+    ], capture_output=True, text=True, timeout=10)
+    success = result.returncode == 0 and result.stdout.strip() == "200"
+    messages = {5: "Proxy hostname could not be resolved.", 7: "Cannot connect to the proxy hostname and port.",
+                28: "The proxy connection timed out.", 97: "SOCKS connection failed; check the proxy type."}
+    message = "Proxy connection verified." if success else messages.get(result.returncode, "Proxy test failed; check the address and proxy type.")
+    if result.stdout.strip() == "407" or "407" in result.stderr:
+        message = "This proxy requires authentication."
+    return {"ok": True, **state, "testMessage": message, "testOk": success}
 
 
 def apply(request, root):
     action = request.get("action", "status")
+    if action == "test":
+        return test_connection(root)
     if action == "save":
         host, port = validate(request.get("host", ""), request.get("port", ""), request.get("kind"))
         kind = request["kind"]
@@ -86,6 +130,8 @@ def main():
     try:
         request = json.loads(sys.stdin.readline() or '{"action":"status"}')
         result = apply(request, settings())
+    except subprocess.TimeoutExpired:
+        result = {"ok": False, "error": "The proxy connection timed out."}
     except (ValueError, TypeError) as error:
         result = {"ok": False, "error": str(error)}
     print(json.dumps(result), flush=True)

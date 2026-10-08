@@ -14,6 +14,8 @@ Singleton {
     property string host: ""
     property int port: 8080
     property string error: ""
+    property string testMessage: ""
+    property bool browserRestartRequired: false
     readonly property bool busy: operation.running
     property var pending: ({action: "status"})
 
@@ -26,6 +28,7 @@ Singleton {
     }
 
     function refresh(): void { run({action: "status"}); }
+    function test(): void { run({action: "test"}); }
     function toggle(value: bool): void { run({action: "toggle", enabled: value}); }
     function save(hostname: string, proxyPort: string, type: string, active: bool): void {
         run({action: "save", host: hostname, port: proxyPort, kind: type, enabled: active});
@@ -53,6 +56,8 @@ Singleton {
                     root.kind = data.kind;
                     root.host = data.host;
                     root.port = data.port;
+                    root.browserRestartRequired = data.browserRestartRequired;
+                    if (data.testMessage !== undefined) root.testMessage = data.testMessage;
                 } catch (_) {
                     root.error = "Proxy settings are unavailable.";
                 }

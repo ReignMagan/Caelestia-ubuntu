@@ -3,6 +3,8 @@ import importlib.util
 import os
 from pathlib import Path
 import unittest
+from unittest.mock import patch
+from subprocess import CompletedProcess
 
 os.environ["GSETTINGS_BACKEND"] = "memory"
 spec = importlib.util.spec_from_file_location("proxy", Path(__file__).parents[1] / "proxy-control.py")
@@ -52,6 +54,15 @@ class ProxyTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             proxy.apply(dict(action="toggle", enabled=True), self.root)
         self.assertFalse(proxy.snapshot(self.root)["enabled"])
+
+    def test_connection_uses_explicit_proxy_without_enabling_it(self):
+        self.save(kind="socks", host="::1", port="1080")
+        proxy.apply(dict(action="toggle", enabled=False), self.root)
+        with patch.object(proxy.subprocess, 'run', return_value=CompletedProcess([], 0, '200', '')) as run:
+            result = proxy.test_connection(self.root)
+        self.assertTrue(result['testOk'])
+        self.assertFalse(result['enabled'])
+        self.assertIn('socks5h://[::1]:1080', run.call_args.args[0])
 
 
 if __name__ == "__main__":

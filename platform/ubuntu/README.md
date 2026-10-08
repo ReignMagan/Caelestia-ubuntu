@@ -52,6 +52,10 @@ logout, or reboot is performed by the installer.
   Apps must support the system proxy; this does not create a VPN or a tunnel.
   Status reflects the configured setting, not a connection or anonymity test.
   A single sleeping dconf subscription tracks changes without polling servers.
+  Test connection makes one explicit request through the saved proxy without
+  changing the switch. For Brave, a per-user launcher enables Chromium's GNOME
+  proxy-settings subscription within Hyprland. Close and reopen an already
+  running Brave once after installation; subsequent switches are live.
 - Ubuntu's standard GTK light/dark preference and Yaru variant follow the shell.
   These two appearance preferences are shared with GNOME on the same account.
   The session's dconf directory links to the account's normal database so GTK
