@@ -6,8 +6,8 @@ mkdir -p "$XDG_CACHE_HOME" "$XDG_STATE_HOME"
 if [[ -f "$XDG_STATE_HOME/caelestia/scheme.json" ]]; then
  "$base/bin/sync-theme.py" || true
 fi
-# Colour templates and GTK config updates are restricted to XDG_CONFIG_HOME.
+# Shell colour templates stay in the private configuration directory.
 if [[ ! -e "$XDG_STATE_HOME/caelestia/wallpaper/path.txt" ]]; then
  caelestia wallpaper -f "$XDG_CONFIG_HOME/quickshell/caelestia/assets/wallpaper.webp" || true
 fi
-exec qs -c caelestia -n > "$XDG_CACHE_HOME/shell.log" 2>&1
+exec python3 "$base/bin/shell-supervisor.py" > "$XDG_CACHE_HOME/shell.log" 2>&1

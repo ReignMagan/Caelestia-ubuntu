@@ -15,6 +15,7 @@ fi
 install -m755 "$here/environment.sh" "$base/bin/environment.sh"
 install -m755 "$here/session.sh" "$base/bin/session"
 install -m755 "$here/start-shell.sh" "$base/bin/start-shell"
+install -m644 "$here/shell-supervisor.py" "$base/bin/shell-supervisor.py"
 install -m755 "$here/terminal.sh" "$base/bin/caelestia-terminal"
 install -m755 "$here/start-terminal-server.sh" "$base/bin/start-terminal-server"
 install -m644 "$here/caelestia-cli.py" "$base/bin/caelestia-cli.py"

@@ -44,6 +44,8 @@ logout, or reboot is performed by the installer.
   the whole-dotfiles installer is outside this Ubuntu session's scope.
 - A theme hook generates Kitty's palette, reloads only this session's Kitty
   processes, and updates window borders. Theme changes need no polling daemon.
+- The shell launcher recovers unexpected Quickshell crashes with a short backoff
+  and a retry limit. It exits on intentional shell shutdown or compositor logout.
 - Ubuntu's standard GTK light/dark preference and Yaru variant follow the shell.
   These two appearance preferences are shared with GNOME on the same account.
   The session's dconf directory links to the account's normal database so GTK
