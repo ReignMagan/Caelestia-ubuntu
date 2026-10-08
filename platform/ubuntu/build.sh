@@ -1,6 +1,16 @@
 #!/usr/bin/env bash
 set -euo pipefail
 if (( EUID == 0 )); then echo 'Build as your normal user, not with sudo.' >&2; exit 1; fi
+python3 -c 'import sys; sys.exit(0 if sys.version_info >= (3, 13) else "Caelestia CLI requires Python 3.13 or newer.")'
+if ! command -v qmake6 >/dev/null; then
+ echo 'Qt build tools are missing; run platform/ubuntu/install-dependencies.sh first.' >&2
+ exit 1
+fi
+qt_version=$(qmake6 -query QT_VERSION)
+if ! dpkg --compare-versions "$qt_version" ge 6.10; then
+ echo "Qt 6.10 or newer is required; found $qt_version." >&2
+ exit 1
+fi
 here=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)
 repo=$(cd "$here/../.." && pwd)
 base="$HOME/.local/share/caelestia-ubuntu"

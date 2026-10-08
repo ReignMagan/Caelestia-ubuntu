@@ -1,6 +1,8 @@
 # Independent Caelestia session for Ubuntu
 
-This port targets Ubuntu 26.04 on an existing Hyprland installation, with Qt 6.10.
+This port targets Ubuntu 26.04 with Qt 6.10. The dependency installer includes
+Hyprland and desktop tools; an existing Wayland desktop is needed for validation.
+For clone-to-login instructions, start with [the main README](../../README.md).
 It adds a **Caelestia** entry to the display manager alongside Ubuntu, GNOME, and
 Hyprland. The session uses its own config and runtime; it does not install the
 Arch dotfiles or replace the existing Quickshell executable.

@@ -3,7 +3,6 @@ cmake
 ninja-build
 pkg-config
 git
-gh
 autoconf
 automake
 libtool
@@ -62,3 +61,11 @@ libvulkan-dev
 qt6-wayland-private-dev
 curl
 qalc
+hyprland
+kitty
+network-manager
+wireplumber
+pavucontrol
+nautilus
+policykit-1-gnome
+fonts-dejavu-core
