@@ -248,3 +248,5 @@ When reporting an issue, include your Ubuntu version, session type, and relevant
 error lines. Review logs before posting them publicly.
 
 For subsequent updates, follow [the update instructions](README.md#update).
+Existing installations can apply the [performance settings](README.md#performance)
+with `bash platform/ubuntu/optimize.sh` from the project folder.

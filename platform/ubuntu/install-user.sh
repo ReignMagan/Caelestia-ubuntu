@@ -8,6 +8,8 @@ mkdir -p "$base/bin" "$config/hypr" "$config/caelestia" "$config/kitty" "$base/c
 install -m755 "$here/environment.sh" "$base/bin/environment.sh"
 install -m755 "$here/session.sh" "$base/bin/session"
 install -m755 "$here/start-shell.sh" "$base/bin/start-shell"
+install -m755 "$here/terminal.sh" "$base/bin/caelestia-terminal"
+install -m755 "$here/start-terminal-server.sh" "$base/bin/start-terminal-server"
 if [[ ! -f "$config/caelestia/cli.json" ]]; then
  # Some upstream theme integrations change shared GTK settings, browser policies,
  # or every open PTY. Limit this separate session to its own Hyprland files.
@@ -29,7 +31,7 @@ if [[ ! -f "$config/caelestia/shell.json" ]]; then
 {
  "services": {"clockFormat":"twelveHour","defaultPlayer":"Spotify"},
  "general": {
-  "apps": {"terminal":["kitty"],"audio":["pavucontrol"],"explorer":["nautilus"]},
+  "apps": {"terminal":["caelestia-terminal"],"audio":["pavucontrol"],"explorer":["nautilus"]},
   "idle": {"lockBeforeSleep":true,"timeouts":[
    {"timeout":300,"idleAction":"lock"},
    {"timeout":600,"idleAction":"dpms off","returnAction":"dpms on"},

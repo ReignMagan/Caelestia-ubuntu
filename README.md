@@ -121,6 +121,29 @@ and inspect `~/.local/share/caelestia-ubuntu/cache/shell.log`.
 Volume and brightness keys are configured. Hardware support depends on your
 Ubuntu audio and backlight setup.
 
+## Performance
+
+New installations use a session-scoped, hidden Kitty instance to keep its font
+and GPU caches warm. Terminal shortcuts and the shell launcher reuse that
+instance; it keeps a background cache process but no workspace window. The
+server watches its compositor connection and cleans up on logout. If it is
+not running, the terminal command starts a normal Kitty window automatically.
+Animations remain enabled with roughly 180–240 ms window/workspace transitions,
+and the Hyprland blur uses one pass.
+
+Existing users can explicitly apply these settings after updating their clone:
+
+```bash
+bash platform/ubuntu/optimize.sh
+```
+
+This backs up the Hyprland and shell settings it changes under
+`~/.config/caelestia-ubuntu/performance-backups/`. It preserves custom launcher
+terminal commands and refuses an unfamiliar terminal binding. The new settings
+apply on your next Caelestia login; the script does not reload your active
+compositor or close your apps. The migration replaces the session's animation
+block, so review it if you have customized those animations.
+
 ## Customize
 
 Only edit the separate configuration:
