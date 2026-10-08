@@ -76,8 +76,10 @@ Scope {
     PamContext {
         id: passwd
 
-        config: "passwd"
-        configDirectory: Quickshell.shellPath("assets/pam.d")
+        // Ubuntu uses its maintained common-auth stack. Other platforms keep
+        // the upstream bundled PAM configuration.
+        config: Quickshell.env("CAELESTIA_UBUNTU_SESSION") === "1" ? "common-auth" : "passwd"
+        configDirectory: Quickshell.env("CAELESTIA_UBUNTU_SESSION") === "1" ? "/etc/pam.d" : Quickshell.shellPath("assets/pam.d")
 
         onMessageChanged: {
             if (message.startsWith("The account is locked"))

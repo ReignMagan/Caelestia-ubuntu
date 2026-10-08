@@ -35,3 +35,7 @@ qml_module(caelestia-services
         Caelestia
         Caelestia.Config
 )
+
+# libcava's .pc file lists include/cava, while cavaprovider includes
+# <cava/cavacore.h>. Include its prefix root for non-system installations.
+target_include_directories(caelestia-services PRIVATE "${Cava_INCLUDEDIR}")

@@ -4,8 +4,31 @@ import Caelestia.Config
 import qs.components
 import qs.services
 
-DoubleSpinBox {
+SpinBox {
     id: root
+
+    // Fixed-point values preserve decimal settings on Qt 6.10, where the
+    // Qt 6.11 DoubleSpinBox type is unavailable.
+    property real realValue: 0
+    property real realFrom: 0
+    property real realTo: 99
+    property real realStepSize: 1
+    readonly property int decimals: realStepSize < 1 ? Math.max(1, Math.ceil(-Math.log10(realStepSize))) : 0
+    readonly property int factor: Math.pow(10, decimals)
+
+    from: Math.round(realFrom * factor)
+    to: Math.round(realTo * factor)
+    value: Math.round(realValue * factor)
+    stepSize: Math.max(1, Math.round(realStepSize * factor))
+    textFromValue: (value, locale) => Number(value / factor).toLocaleString(locale, "f", decimals)
+    valueFromText: (text, locale) => Math.round(Number.fromLocaleString(locale, text) * factor)
+    validator: DoubleValidator {
+        bottom: Math.min(root.realFrom, root.realTo)
+        top: Math.max(root.realFrom, root.realTo)
+        decimals: root.decimals
+        locale: root.locale.name
+        notation: DoubleValidator.StandardNotation
+    }
 
     property int repeatRate: 400
     property int repeatDecay: 50
@@ -30,7 +53,6 @@ DoubleSpinBox {
     }
 
     editable: true
-    decimals: stepSize < 1 ? Math.max(1, Math.ceil(-Math.log10(stepSize))) : 0
     spacing: Tokens.spacing.small
 
     implicitWidth: contentItem.implicitWidth + leftPadding + rightPadding

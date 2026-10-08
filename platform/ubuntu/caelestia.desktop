@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=Caelestia
+Comment=Caelestia Shell on Hyprland, with an independent Ubuntu configuration
+Exec=/usr/local/bin/caelestia-session
+TryExec=/usr/bin/Hyprland
+Type=Application
+DesktopNames=Hyprland;Caelestia;
+Keywords=wayland;hyprland;caelestia;

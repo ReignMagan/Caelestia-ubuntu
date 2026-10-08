@@ -24,6 +24,12 @@ https://github.com/user-attachments/assets/0840f496-575c-4ca6-83a8-87bb01a85c5f
 > This repo is for Caelestia's desktop shell only. If you want installation instructions
 > for the entire dotfiles (which include this shell), head to [the main repo][dots-repo] instead.
 
+### Ubuntu (independent session)
+
+See [the Ubuntu session guide](platform/ubuntu/README.md) for an isolated Ubuntu
+26.04 build and a separate **Caelestia** login option alongside your existing
+desktop sessions.
+
 ### Arch Linux
 
 > [!WARNING]
