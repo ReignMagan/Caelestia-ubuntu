@@ -14,6 +14,7 @@ PageBase {
             audio: Tr.tr("Speakers"),
             microphone: Tr.tr("Microphone"),
             network: Tr.tr("Network"),
+            proxy: Tr.tr("Proxy"),
             bluetooth: Tr.tr("Bluetooth"),
             battery: Tr.tr("Battery")
         })

@@ -20,6 +20,7 @@ install -m755 "$here/terminal.sh" "$base/bin/caelestia-terminal"
 install -m755 "$here/start-terminal-server.sh" "$base/bin/start-terminal-server"
 install -m644 "$here/caelestia-cli.py" "$base/bin/caelestia-cli.py"
 install -m755 "$here/sync-theme.py" "$base/bin/sync-theme.py"
+install -m755 "$here/proxy-control.py" "$base/bin/proxy-control.py"
 if [[ ! -f "$config/caelestia/cli.json" ]]; then
  # Some upstream theme integrations change shared GTK settings, browser policies,
  # or every open PTY. Limit this separate session to its own Hyprland files.
@@ -69,6 +70,16 @@ python3 - "$config" <<'PY'
 import json, sys
 from pathlib import Path
 config = Path(sys.argv[1])
+shell_path = config / 'caelestia/shell.json'
+shell = json.loads(shell_path.read_text())
+bar = shell.setdefault('bar', {})
+icons = bar.setdefault('statusIcons', [
+    {'id': 'lockStatus', 'enabled': True}, {'id': 'network', 'enabled': True},
+    {'id': 'bluetooth', 'enabled': True}, {'id': 'battery', 'enabled': True}])
+if not any(item['id'] == 'proxy' for item in icons):
+    index = next((i + 1 for i, item in enumerate(icons) if item['id'] == 'network'), len(icons))
+    icons.insert(index, {'id': 'proxy', 'enabled': True})
+shell_path.write_text(json.dumps(shell, indent=2) + '\n')
 hypr = config / 'hypr/hyprland.conf'
 content = hypr.read_text()
 source = 'source = ~/.config/caelestia-ubuntu/hypr/scheme/current.conf'

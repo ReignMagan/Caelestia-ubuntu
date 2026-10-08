@@ -79,7 +79,7 @@ Item {
 
     Keys.onPressed: event => {
         // Don't intercept keys when password popout is active - let it handle them
-        if (currentName === "wirelesspassword") {
+        if (currentName === "wirelesspassword" || currentName === "proxy") {
             event.accepted = false;
         }
     }
@@ -97,7 +97,7 @@ Item {
     }
 
     Binding {
-        when: root.isDetached || (root.hasCurrent && root.currentName === "wirelesspassword")
+        when: root.isDetached || (root.hasCurrent && ["wirelesspassword", "proxy"].includes(root.currentName))
 
         target: QsWindow.window
         property: "WlrLayershell.keyboardFocus"

@@ -167,7 +167,13 @@ ColumnLayout {
                 roleValue: "statusIcons"
                 delegate: EntryWrapper {
                     StatusIcons {
+                        id: statusItem
                         objectName: "taskbarStatusIcons"
+                        onProxyRequested: y => {
+                            root.popouts.currentName = "proxy";
+                            root.popouts.currentCenter = statusItem.mapToItem(root, 0, y).y;
+                            root.popouts.hasCurrent = true;
+                        }
                     }
                 }
             }

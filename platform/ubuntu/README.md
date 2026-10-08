@@ -46,6 +46,12 @@ logout, or reboot is performed by the installer.
   processes, and updates window borders. Theme changes need no polling daemon.
 - The shell launcher recovers unexpected Quickshell crashes with a short backoff
   and a retry limit. It exits on intentional shell shutdown or compositor logout.
+- The Proxy status icon opens a hostname/port panel with HTTP/HTTPS and SOCKS
+  options. Save and enable applies the address to Ubuntu's system proxy; Off
+  retains it for later. Settings are shared with the account's other desktops.
+  Apps must support the system proxy; this does not create a VPN or a tunnel.
+  Status reflects the configured setting, not a connection or anonymity test.
+  A single sleeping dconf subscription tracks changes without polling servers.
 - Ubuntu's standard GTK light/dark preference and Yaru variant follow the shell.
   These two appearance preferences are shared with GNOME on the same account.
   The session's dconf directory links to the account's normal database so GTK

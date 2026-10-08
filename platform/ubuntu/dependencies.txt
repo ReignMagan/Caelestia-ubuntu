@@ -54,6 +54,8 @@ grim
 slurp
 wf-recorder
 python3-venv
+python3-gi
+dconf-cli
 libcli11-dev
 libgbm-dev
 libegl1-mesa-dev

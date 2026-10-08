@@ -16,6 +16,7 @@ StyledRect {
     readonly property alias items: iconColumn
 
     readonly property int spacing: Tokens.spacing.medium / 2
+    signal proxyRequested(y: real)
 
     // Index of the first/last entry that isn't collapsed, for edge margin gating
     readonly property int firstPresent: {
@@ -131,6 +132,21 @@ StyledRect {
                     delegate: EntryWrapper {
                         BluetoothStatus {
                             colour: root.colour
+                        }
+                    }
+                }
+                DelegateChoice {
+                    roleValue: "proxy"
+                    delegate: EntryWrapper {
+                        MaterialIcon {
+                            animate: true
+                            text: "settings_ethernet"
+                            color: Proxy.enabled ? Colours.palette.m3primary : root.colour
+                            fill: Proxy.enabled ? 1 : 0
+
+                            StateLayer {
+                                onClicked: root.proxyRequested(parent.mapToItem(root, 0, parent.height / 2).y)
+                            }
                         }
                     }
                 }

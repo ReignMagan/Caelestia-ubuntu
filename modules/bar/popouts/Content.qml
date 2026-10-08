@@ -108,6 +108,13 @@ Item {
         }
 
         Popout {
+            name: "proxy"
+            sourceComponent: ProxyPopout {
+                popouts: root.popouts
+            }
+        }
+
+        Popout {
             name: "audio"
             sourceComponent: AudioPopout {
                 popouts: root.popouts
