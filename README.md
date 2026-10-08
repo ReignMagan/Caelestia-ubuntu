@@ -41,6 +41,9 @@ manager. Build jobs default to **2**; allow time for the initial compilation.
 
 ## Installation
 
+**New to this setup? Follow the [step-by-step installation guide](INSTALL.md)**
+for downloading, building, testing, selecting the session, and troubleshooting.
+
 ### 1. Get the Ubuntu port
 
 Open a terminal in your existing Wayland desktop:
