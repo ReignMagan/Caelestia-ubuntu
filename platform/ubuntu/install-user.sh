@@ -10,6 +10,7 @@ install -m755 "$here/session.sh" "$base/bin/session"
 install -m755 "$here/start-shell.sh" "$base/bin/start-shell"
 install -m755 "$here/terminal.sh" "$base/bin/caelestia-terminal"
 install -m755 "$here/start-terminal-server.sh" "$base/bin/start-terminal-server"
+install -m644 "$here/caelestia-cli.py" "$base/bin/caelestia-cli.py"
 if [[ ! -f "$config/caelestia/cli.json" ]]; then
  # Some upstream theme integrations change shared GTK settings, browser policies,
  # or every open PTY. Limit this separate session to its own Hyprland files.
@@ -58,7 +59,7 @@ set -euo pipefail
 case ${1:-} in
  install|update) echo 'This Ubuntu session updates through its platform/ubuntu/build.sh, not the Arch dotfiles installer.' >&2; exit 2 ;;
 esac
-exec "$HOME/.local/share/caelestia-ubuntu/venv/bin/caelestia" "$@"
+exec "$HOME/.local/share/caelestia-ubuntu/venv/bin/python" "$HOME/.local/share/caelestia-ubuntu/bin/caelestia-cli.py" "$@"
 WRAPPER
 chmod 755 "$base/bin/caelestia"
 # Material Symbols is loaded only by this session's fontconfig configuration.
