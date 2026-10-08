@@ -15,6 +15,7 @@ Singleton {
     property bool showPreview
     property string scheme
     property string flavour
+    property string lastDarkCatppuccinFlavour: "mocha"
     readonly property bool light: showPreview ? previewLight : currentLight
     property bool currentLight
     property bool previewLight
@@ -66,6 +67,8 @@ Singleton {
         if (!isPreview) {
             root.scheme = scheme.name;
             flavour = scheme.flavour;
+            if (scheme.name === "catppuccin" && scheme.mode === "dark")
+                lastDarkCatppuccinFlavour = scheme.flavour;
             currentLight = scheme.mode === "light";
         } else {
             previewLight = scheme.mode === "light";
@@ -79,7 +82,17 @@ Singleton {
     }
 
     function setMode(mode: string): void {
-        Quickshell.execDetached(["caelestia", "scheme", "set", "--notify", "-m", mode]);
+        const command = ["caelestia", "scheme", "set", "--notify"];
+        // Catppuccin's light palette is Latte. Mocha, Frappe, and Macchiato
+        // only contain dark palettes; select the flavour before changing mode.
+        if (root.scheme === "catppuccin") {
+            if (mode === "light" && root.flavour !== "latte")
+                command.push("-f", "latte");
+            else if (mode === "dark" && root.flavour === "latte")
+                command.push("-f", lastDarkCatppuccinFlavour);
+        }
+        command.push("-m", mode);
+        Quickshell.execDetached(command);
     }
 
     function reloadHyprRules(): void {
