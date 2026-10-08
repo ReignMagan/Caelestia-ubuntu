@@ -38,6 +38,8 @@ logout, or reboot is performed by the installer.
 - Caelestia's Git Quickshell is used only inside this session. `/usr/bin/quickshell`
   and `~/.config/quickshell/desktop` remain unchanged.
 - `XDG_DATA_HOME` remains normal so the launcher can discover installed apps.
+- App discovery includes Ubuntu Snap and installed Flatpak export directories,
+  including Spotify's Snap desktop entry, even when login profile scripts are skipped.
 - The session wrapper refuses `caelestia install` and `caelestia update`, because
   the whole-dotfiles installer is outside this Ubuntu session's scope.
 - CLI theme integrations that alter shared GTK settings, browser policies,
