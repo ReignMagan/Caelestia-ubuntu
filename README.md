@@ -128,8 +128,9 @@ and GPU caches warm. Terminal shortcuts and the shell launcher reuse that
 instance; it keeps a background cache process but no workspace window. The
 server watches its compositor connection and cleans up on logout. If it is
 not running, the terminal command starts a normal Kitty window automatically.
-Animations remain enabled with roughly 180–240 ms window/workspace transitions,
-and the Hyprland blur uses one pass.
+Window/workspace animations use roughly 250–300 ms transitions. Caelestia
+popups keep their native default animations without a second compositor fade;
+the Hyprland blur uses one pass.
 
 Existing users can explicitly apply these settings after updating their clone:
 
