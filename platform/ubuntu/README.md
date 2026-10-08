@@ -42,8 +42,15 @@ logout, or reboot is performed by the installer.
   including Spotify's Snap desktop entry, even when login profile scripts are skipped.
 - The session wrapper refuses `caelestia install` and `caelestia update`, because
   the whole-dotfiles installer is outside this Ubuntu session's scope.
-- CLI theme integrations that alter shared GTK settings, browser policies,
-  application data, or other open terminals are disabled for this session.
+- A theme hook generates Kitty's palette, reloads only this session's Kitty
+  processes, and updates window borders. Theme changes need no polling daemon.
+- Ubuntu's standard GTK light/dark preference and Yaru variant follow the shell.
+  These two appearance preferences are shared with GNOME on the same account.
+  The session's dconf directory links to the account's normal database so GTK
+  clients agree with the D-Bus settings service; any old private database is backed up.
+  Apps with custom themes may need their own system-theme setting.
+- Upstream integrations that change browser policies, application data, or
+  unrelated terminals remain disabled.
 - Ubuntu password authentication uses `/etc/pam.d/common-auth` only when
   `CAELESTIA_UBUNTU_SESSION=1`; the upstream bundled PAM stack is unchanged on
   other platforms. No system PAM files are written.

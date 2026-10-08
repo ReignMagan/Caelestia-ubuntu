@@ -5,12 +5,20 @@ here=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)
 base="$HOME/.local/share/caelestia-ubuntu"
 config="$HOME/.config/caelestia-ubuntu"
 mkdir -p "$base/bin" "$config/hypr" "$config/caelestia" "$config/kitty" "$base/cache" "$base/state"
+# GTK clients and the account's D-Bus dconf service must read the same database.
+if [[ ! -L "$config/dconf" ]]; then
+ if [[ -e "$config/dconf" ]]; then
+  mv "$config/dconf" "$config/dconf.before-theme-sync.$(date +%s)"
+ fi
+ ln -s "$HOME/.config/dconf" "$config/dconf"
+fi
 install -m755 "$here/environment.sh" "$base/bin/environment.sh"
 install -m755 "$here/session.sh" "$base/bin/session"
 install -m755 "$here/start-shell.sh" "$base/bin/start-shell"
 install -m755 "$here/terminal.sh" "$base/bin/caelestia-terminal"
 install -m755 "$here/start-terminal-server.sh" "$base/bin/start-terminal-server"
 install -m644 "$here/caelestia-cli.py" "$base/bin/caelestia-cli.py"
+install -m755 "$here/sync-theme.py" "$base/bin/sync-theme.py"
 if [[ ! -f "$config/caelestia/cli.json" ]]; then
  # Some upstream theme integrations change shared GTK settings, browser policies,
  # or every open PTY. Limit this separate session to its own Hyprland files.
@@ -25,6 +33,10 @@ if [[ ! -f "$config/caelestia/cli.json" ]]; then
  }
 }
 JSON
+fi
+mkdir -p "$config/hypr/scheme"
+if [[ ! -f "$config/hypr/scheme/current.conf" ]]; then
+ printf '$primary = 9ccbfb\n$outlineVariant = 44474e\n' > "$config/hypr/scheme/current.conf"
 fi
 if [[ ! -f "$config/hypr/hyprland.conf" ]]; then install -m644 "$here/hyprland.conf" "$config/hypr/hyprland.conf"; fi
 if [[ ! -f "$config/caelestia/shell.json" ]]; then
@@ -52,6 +64,31 @@ background_opacity 0.85
 confirm_os_window_close 0
 KITTY
 fi
+python3 - "$config" <<'PY'
+import json, sys
+from pathlib import Path
+config = Path(sys.argv[1])
+hypr = config / 'hypr/hyprland.conf'
+content = hypr.read_text()
+source = 'source = ~/.config/caelestia-ubuntu/hypr/scheme/current.conf'
+if source not in content:
+    content = source + '\n' + content
+content = content.replace('col.active_border = rgba(9ccbfbff)', 'col.active_border = rgba($primaryff)')
+content = content.replace('col.inactive_border = rgba(44474eff)', 'col.inactive_border = rgba($outlineVariantff)')
+hypr.write_text(content)
+path = config / 'caelestia/cli.json'
+data = json.loads(path.read_text())
+theme = data.setdefault('theme', {})
+hook = '"$HOME/.local/share/caelestia-ubuntu/bin/sync-theme.py"'
+previous = theme.get('postHook', '')
+if hook not in previous:
+    theme['postHook'] = f'{previous}; {hook}' if previous else hook
+path.write_text(json.dumps(data, indent=2) + '\n')
+kitty = config / 'kitty/kitty.conf'
+content = kitty.read_text()
+if 'include theme.conf' not in content.splitlines():
+    kitty.write_text(content + '\ninclude theme.conf\n')
+PY
 # The CLI wrapper blocks whole-dotfiles install/update in this independent session.
 cat > "$base/bin/caelestia" <<'WRAPPER'
 #!/usr/bin/env bash
