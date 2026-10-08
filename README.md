@@ -161,6 +161,11 @@ Kitty; fonts already installed on your system are available to this session.
 The CLI's shared GTK, browser-policy, application-data, and open-terminal theme
 integrations are disabled to keep other desktop sessions separate. Avoid enabling
 those integrations unless you intend their effects outside this session.
+The Ubuntu theme hook still synchronizes Kitty, window borders, and the account's
+standard GTK light/dark preference. The Proxy bar panel also uses the account's
+shared system-proxy settings; it supports hostname/port entries for HTTP/HTTPS or
+SOCKS and affects apps that honor those settings. Its status updates through
+settings notifications, without polling proxy servers.
 
 ## Update
 
